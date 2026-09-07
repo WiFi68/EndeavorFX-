@@ -4,9 +4,11 @@
 
 Analyze the scene. Understand the shot. Enhance the image.
 
-EndeavorFX is a free, open-source Roblox Lua lighting system that analyzes a scene and automatically builds a cinematic lighting setup around the active camera.
+EndeavorFX is a free, open-source Roblox Lua lighting system that analyzes the current scene and active camera, then builds a cinematic lighting solution around the shot.
 
-**There is no official plugin.** EndeavorFX is a standalone Command Bar Lua system. Copy the code, paste it into the Command Bar, and run it.
+**There is no official plugin.**
+
+EndeavorFX is a standalone **Command Bar** system. Copy the source, paste it into Roblox Studio's Command Bar, and run it.
 
 «Built by WiFi. Improved by everyone.»
 
@@ -14,35 +16,35 @@ EndeavorFX is a free, open-source Roblox Lua lighting system that analyzes a sce
 
 ## ✨ Features
 
-**V9 implements:**
+**EndeavorFX V9 includes:**
 
-- 🎥 **Shot Analysis** — Analyzes the active camera, composition, visible scene content, screen-space importance, and shot characteristics.
+* 🎥 **Shot Analysis** — Analyzes the active camera, viewport composition, visible scene content, screen-space importance, and shot characteristics.
 
-- 🧠 **Adaptive Lighting** — Analyzes scene luminance, color, materials, existing lighting, and composition to determine an appropriate cinematic lighting solution.
+* 🧠 **Adaptive Lighting** — Evaluates scene luminance, color, materials, existing lighting, and composition to calculate a cinematic lighting solution.
 
-- 🎯 **Multi-Ray Auto Focus** — Uses multiple camera rays to estimate a more stable focus distance instead of relying on a single center ray.
+* 🎯 **Multi-Ray Auto Focus** — Uses multiple camera rays to estimate a more stable focus distance instead of relying on a single center ray.
 
-- 💡 **Existing Light Analysis** — Analyzes existing PointLights, SpotLights, and SurfaceLights and incorporates their contribution into the lighting solution.
+* 💡 **Existing Light Analysis** — Analyzes existing PointLights, SpotLights, and SurfaceLights and incorporates their contribution into the solution.
 
-- 🧱 **Material Awareness** — Considers relevant material characteristics including Metal, Glass, and Neon/emissive surfaces.
+* 🧱 **Material Awareness** — Considers relevant materials including Metal, Glass, and Neon/emissive surfaces.
 
-- 🌅 **Sun / Key Light Analysis** — Considers the scene's sun direction and existing lighting when solving the shot.
+* 🌅 **Sun & Key Light Analysis** — Considers the scene's sun direction and existing light sources when solving the shot.
 
-- 🏠 **Interior / Exterior Awareness** — Uses scene enclosure and sky visibility heuristics to distinguish between different lighting contexts.
+* 🏠 **Interior / Exterior Awareness** — Uses sky visibility and scene enclosure heuristics to determine the lighting context.
 
-- 🌫️ **Atmosphere Solver** — Dynamically determines atmospheric settings based on mood, time of day, scene conditions, and the solved shot.
+* 🌫️ **Atmosphere Solver** — Dynamically calculates atmospheric settings from the selected mood, time of day, and analyzed scene.
 
-- 🎨 **Cinematic Post Processing** — Supports Bloom, Color Correction, Depth of Field, Sun Rays, and Color Grading.
+* 🎨 **Cinematic Post Processing** — Supports Bloom, Color Correction, Depth of Field, Sun Rays, and Color Grading.
 
-- 🎞️ **Color Grading** — Uses Roblox's ColorGradingEffect and appropriate tonemapper configuration where supported.
+* 🎞️ **Tonemapping** — Uses Roblox's ColorGradingEffect with a supported tonemapper configuration.
 
-- 🌅 **Time of Day Presets** — Dawn, Morning, Noon, GoldenHour, Dusk, Night, and Studio.
+* 🌅 **Time of Day Presets** — Dawn, Morning, Noon, GoldenHour, Dusk, Night, and Studio.
 
-- 🎭 **Mood Presets** — Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon, and Night.
+* 🎭 **Mood Presets** — Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon, and Night.
 
-- ⚙️ **Quality Modes** — Showcase, Cinematic, and Balanced. Quality controls how much analysis is performed internally.
+* ⚙️ **Quality Modes** — Showcase, Cinematic, and Balanced. Quality determines how much scene analysis is performed.
 
-- 💾 **Backup & Restore** — Protects the original lighting configuration before EndeavorFX modifies it.
+* 💾 **Automatic Backup** — Creates a protected snapshot of the original Lighting configuration before EndeavorFX modifies it.
 
 ---
 
@@ -52,186 +54,270 @@ EndeavorFX is a free, open-source Roblox Lua lighting system that analyzes a sce
 
 1. Open your Roblox Studio project.
 2. Open the **Command Bar**.
-3. Open `src/EndeavorFX.lua` in this repository.
-4. Copy the entire code.
+3. Open `src/EndeavorFX.lua` from this repository.
+4. Copy the entire script.
 5. Paste it into the Command Bar.
-6. Edit the four user settings at the top if desired:
-   - `QUALITY`
-   - `MOOD`
-   - `TIME_OF_DAY`
-   - `CONTROL_TIME`
+6. Edit the four settings at the top if desired.
 7. Run the script.
 
 That's it.
 
-- **No plugin installation.**
-- **No external application.**
-- **No paid software.**
-- **Just Lua.**
+* **No plugin installation.**
+* **No external application.**
+* **No paid software.**
+* **Just Lua.**
+
+EndeavorFX analyzes the current shot, solves the lighting, applies the result, and finishes.
+
+It does **not** run continuously in the background.
 
 ---
 
 ## ⚙️ Configuration
 
-EndeavorFX exposes four user-facing settings:
+EndeavorFX intentionally exposes only four user-facing settings:
 
 ```lua
-local QUALITY = "Showcase"      -- Showcase, Cinematic, or Balanced
-local MOOD = "Cinematic"        -- Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon, or Night
-local TIME_OF_DAY = "Morning"   -- Dawn, Morning, Noon, GoldenHour, Dusk, Night, or Studio
-local CONTROL_TIME = true       -- true to update ClockTime, false to leave it unchanged
+local QUALITY = "Showcase"
+local MOOD = "Cinematic"
+local TIME_OF_DAY = "Morning"
+local CONTROL_TIME = true
 ```
+
+These are the only settings most users need to change.
 
 ### QUALITY
 
-Controls how much scene analysis is performed:
+Controls how much scene analysis is performed.
 
-- **Showcase** — Maximum quality. Analyzes more parts, lights, and viewport samples for the highest-quality result. Use when performance is not a concern.
-- **Cinematic** — Balanced quality. Good analysis with reasonable performance. Recommended for most use cases.
-- **Balanced** — Fast analysis. Lighter scene scanning for better performance on slower machines or complex scenes.
+* **Showcase** — Maximum analysis. Uses more scene samples, lights, and camera analysis for the most thorough result.
+* **Cinematic** — Balanced analysis and performance. Recommended for most scenes.
+* **Balanced** — Faster and lighter analysis for slower machines or complex scenes.
+
+Higher quality does not directly mean "better graphics."
+
+It means **more analysis before the lighting solution is calculated.**
 
 ### MOOD
 
-Defines the emotional tone and lighting aesthetic:
+Defines the overall cinematic aesthetic.
 
-- **Cinematic** — Professional, neutral cinematic lighting.
-- **GoldenHour** — Warm, golden sunlit aesthetic.
-- **Studio** — Clean, bright studio lighting.
-- **Dreamy** — Soft, ethereal, oversaturated look.
-- **Horror** — Dark, desaturated, ominous atmosphere.
-- **Neon** — High saturation, electric, synthwave-like.
-- **Night** — Cool, dim night-time lighting.
+* **Cinematic** — Neutral, balanced cinematic lighting.
+* **GoldenHour** — Warm, golden, sunlit lighting.
+* **Studio** — Clean and controlled studio lighting.
+* **Dreamy** — Soft, bright, atmospheric lighting.
+* **Horror** — Dark, desaturated, oppressive lighting.
+* **Neon** — Saturated, bright, electric lighting.
+* **Night** — Cool, dim nighttime lighting.
 
 ### TIME_OF_DAY
 
-Controls the sun angle, sky color, and atmospheric tint:
+Defines the simulated time of day used by the solver.
 
-- **Dawn** — Early morning, cool light.
-- **Morning** — Mid-morning, clear light.
-- **Noon** — Midday, bright overhead sun.
-- **GoldenHour** — Late afternoon, warm orange light.
-- **Dusk** — Early evening, purple transitional light.
-- **Night** — Night-time, cool blue darkness.
-- **Studio** — Neutral midday (does not change ClockTime if CONTROL_TIME is false).
+Available presets:
+
+* **Dawn**
+* **Morning**
+* **Noon**
+* **GoldenHour**
+* **Dusk**
+* **Night**
+* **Studio**
 
 ### CONTROL_TIME
 
-If `true`, EndeavorFX sets the Lighting.ClockTime to match the TIME_OF_DAY preset. If `false`, the ClockTime is left unchanged.
+Controls whether EndeavorFX changes `Lighting.ClockTime`.
+
+```lua
+local CONTROL_TIME = true
+```
+
+* `true` — EndeavorFX sets `ClockTime` according to the selected `TIME_OF_DAY`.
+* `false` — EndeavorFX leaves the existing `ClockTime` unchanged.
 
 ---
 
 ## 🎥 How It Works
 
-EndeavorFX operates as a single-shot heuristic solver:
+EndeavorFX V9 is a **single-shot heuristic lighting solver**.
 
-```
+```text
 CAMERA ANALYSIS
-    ↓
+      ↓
 SCENE ANALYSIS
-    ↓
+      ↓
 LIGHT ANALYSIS
-    ↓
+      ↓
+SUN / SKY ANALYSIS
+      ↓
 SHOT SOLVER
-    ↓
+      ↓
 LIGHTING APPLICATION
-    ↓
+      ↓
 POST PROCESSING
-    ↓
+      ↓
 DONE
 ```
 
 ### Pipeline
 
-1. **Camera Analysis** — Analyzes the active camera, viewport composition, and multi-ray focus distance.
+#### 1. Camera Analysis
 
-2. **Scene Analysis** — Scans visible parts within the camera frustum. Analyzes colors, materials (Metal, Glass, Neon), saturation, and warmth. Computes screen-space composition weights.
+EndeavorFX analyzes the active camera, viewport composition, visible geometry, screen-space importance, and focus distance.
 
-3. **Light Analysis** — Analyzes existing PointLights, SpotLights, and SurfaceLights. Computes their energy, brightness, and warmth contribution.
+Multi-ray focus analysis helps produce a more stable depth-of-field target than a single center ray.
 
-4. **Sky & Sun Analysis** — Determines sky visibility and sun direction alignment. Estimates interior vs. exterior context.
+#### 2. Scene Analysis
 
-5. **Shot Solver** — Combines all analysis data with the selected Mood and Time of Day to compute:
-   - Exposure compensation
-   - Ambient color
-   - Outdoor ambient color
-   - Color shift and tint
-   - Bloom intensity
-   - Sun rays intensity
-   - Depth of field parameters
-   - Atmosphere density
+Visible scene content is sampled within the camera's view.
 
-6. **Application** — Applies the solution to Lighting and creates/updates post-processing effects.
+The solver considers:
 
-### Design Philosophy
+* Scene luminance
+* Color
+* Saturation
+* Warmth
+* Screen-space importance
+* Materials
+* Large visible objects
+* Metal
+* Glass
+* Neon/emissive surfaces
+* Scene enclosure
+* Sky visibility
 
-EndeavorFX is **heuristic**, not physically accurate. It uses rules and heuristics to make educated guesses about the scene's lighting needs. Results can vary by scene, and algorithms may change between versions.
+#### 3. Light Analysis
 
-The system is designed to produce a **strong cinematic starting point** rather than perfect photorealism.
+Existing `PointLight`, `SpotLight`, and `SurfaceLight` instances are analyzed.
+
+Their contribution is incorporated into the lighting solution rather than being completely ignored.
+
+#### 4. Sun & Sky Analysis
+
+The solver analyzes sky visibility and the scene's sun direction.
+
+This helps determine whether the shot behaves more like an exterior, partially enclosed, or interior environment.
+
+#### 5. Shot Solver
+
+The analyzed data is combined with the selected **Quality**, **Mood**, and **Time of Day**.
+
+The solver calculates values such as:
+
+* Exposure compensation
+* Ambient lighting
+* Outdoor ambient lighting
+* Color shifts
+* Lighting tint
+* Bloom
+* Sun rays
+* Depth of field
+* Atmosphere
+* Focus distance
+
+#### 6. Application
+
+The calculated solution is applied to Roblox Lighting and the required cinematic post-processing effects.
+
+Once the shot is solved, the script finishes.
 
 ---
 
 ## 🎭 Mood Presets
 
-Each mood defines a unique aesthetic with specific exposure, color, atmosphere, and effect intensities:
+Each mood provides a different starting aesthetic.
 
-- **Cinematic** — Professional, neutral, balanced for general use.
-- **GoldenHour** — Warm, saturated, bright bloom and sun rays.
-- **Studio** — Clean, bright, minimal atmospheric effects.
-- **Dreamy** — Soft, oversaturated, heavy bloom and haze.
-- **Horror** — Dark, desaturated, minimal bloom, oppressive atmosphere.
-- **Neon** — High saturation, high bloom, electric atmosphere.
-- **Night** — Cool, dim, moderate atmosphere and bloom.
+| Mood           | Description                            |
+| -------------- | -------------------------------------- |
+| **Cinematic**  | Neutral, balanced cinematic lighting   |
+| **GoldenHour** | Warm, saturated sunlight               |
+| **Studio**     | Clean, bright controlled lighting      |
+| **Dreamy**     | Soft, atmospheric lighting             |
+| **Horror**     | Dark, desaturated, oppressive lighting |
+| **Neon**       | Saturated, bright, electric lighting   |
+| **Night**      | Cool, dim nighttime lighting           |
+
+The mood does not completely override the scene.
+
+Instead, it acts as a **target aesthetic** that the solver adapts to the analyzed shot.
 
 ---
 
 ## 🌅 Time of Day
 
-Time of Day presets control the sun's ClockTime and the tint of lighting:
+The available presets are:
 
-| Preset     | ClockTime | Tint                    |
-|------------|-----------|-------------------------|
-| Dawn       | 6.2       | Warm orange (sunrise)   |
-| Morning    | 9.0       | Neutral white           |
-| Noon       | 12.5      | Bright white            |
-| GoldenHour | 17.2      | Warm golden orange      |
-| Dusk       | 18.4      | Cool purple             |
-| Night      | 22.0      | Cool blue               |
-| Studio     | 12.0      | Neutral white           |
+| Preset         | ClockTime | General Character                   |
+| -------------- | --------: | ----------------------------------- |
+| **Dawn**       |       6.2 | Early morning, warm/cool transition |
+| **Morning**    |       9.0 | Clear morning light                 |
+| **Noon**       |      12.5 | Bright overhead daylight            |
+| **GoldenHour** |      17.2 | Warm late-afternoon light           |
+| **Dusk**       |      18.4 | Transitional evening light          |
+| **Night**      |      22.0 | Cool nighttime lighting             |
+| **Studio**     |      12.0 | Neutral studio-style daylight       |
+
+`CONTROL_TIME = false` prevents EndeavorFX from changing `ClockTime`.
 
 ---
 
 ## ⚙️ Quality Modes
 
-Higher quality does not mean "better graphics." It means more thorough scene analysis:
+Quality controls the **depth of analysis**, not a direct graphics-quality switch.
 
-- **Showcase** — 900 parts, 260 lights, 15 frustum samples, 9 focus rays, 12 sky rays.
-- **Cinematic** — 650 parts, 180 lights, 11 frustum samples, 7 focus rays, 10 sky rays.
-- **Balanced** — 400 parts, 120 lights, 7 frustum samples, 5 focus rays, 8 sky rays.
+### Showcase
 
-Choose **Showcase** for complex, detailed scenes where you want maximum analysis.
+Maximum analysis.
 
-Choose **Cinematic** for balanced performance and quality.
+* 900 parts
+* 260 lights
+* 15 frustum samples
+* 9 focus rays
+* 12 sky rays
 
-Choose **Balanced** for fast analysis on slow machines or very complex scenes.
+Best for detailed showcase scenes when additional analysis time is acceptable.
+
+### Cinematic
+
+Balanced analysis.
+
+* 650 parts
+* 180 lights
+* 11 frustum samples
+* 7 focus rays
+* 10 sky rays
+
+Recommended for most scenes.
+
+### Balanced
+
+Lightweight analysis.
+
+* 400 parts
+* 120 lights
+* 7 frustum samples
+* 5 focus rays
+* 8 sky rays
+
+Useful for complex scenes or slower development machines.
 
 ---
 
-## 💾 Backup & Restore
+## 💾 Automatic Backup
 
-When EndeavorFX runs, it automatically creates a backup of the original Lighting configuration in:
+Before modifying Lighting, EndeavorFX creates a backup snapshot at:
 
-```
+```text
 Lighting.G_EndeavorFX_BACKUP
 ```
 
-This includes:
-- Original Lighting properties (Ambient, Exposure, etc.)
-- Original post-processing effects (Bloom, DOF, ColorCorrection, etc.)
-- Original Atmosphere (if present)
+The backup contains the original Lighting configuration and copies of relevant existing atmosphere and post-processing effects.
 
-If you run EndeavorFX multiple times, it reuses the same backup (does not create duplicates).
+If EndeavorFX is run multiple times, the existing backup is reused rather than creating a new snapshot every time.
 
-The backup is safe to delete manually at any time.
+This means you can keep the original state protected while experimenting with different settings.
+
+The backup can be deleted manually when it is no longer needed.
 
 ---
 
@@ -241,13 +327,14 @@ EndeavorFX is intentionally open source.
 
 You can:
 
-- **Fork the project** — Create your own version.
-- **Modify the solver** — Change how lighting is computed.
-- **Create presets** — Add custom moods and times.
-- **Experiment with algorithms** — Test new approaches.
-- **Optimize for performance** — Make it faster.
-- **Fix bugs** — Improve stability.
-- **Build tools** — Create plugins, exporters, or integrations around EndeavorFX.
+* **Fork the project**
+* **Modify the solver**
+* **Create custom moods**
+* **Create custom time presets**
+* **Experiment with the analysis algorithms**
+* **Optimize performance**
+* **Fix bugs**
+* **Build your own tools around EndeavorFX**
 
 You don't need to wait for the main project to support your idea.
 
@@ -255,11 +342,11 @@ You don't need to wait for the main project to support your idea.
 
 Want to create:
 
-«EndeavorFX Ultra Mega Blender Quality Lighting Extreme»
+> «EndeavorFX Ultra Mega Blender Quality Lighting Extreme»
 
 **Go for it.**
 
-Want to make a tiny version optimized for performance?
+Want to make a tiny performance-focused version?
 
 **Go for it.**
 
@@ -273,11 +360,17 @@ That's what open source is for.
 
 ## 🤝 Contributing
 
-Found a bug? Have an optimization? Improved the solver? Added a useful feature?
+Found a bug?
+
+Have an optimization?
+
+Improved the solver?
+
+Added a useful feature?
 
 **Open an issue or pull request.**
 
-If your changes are useful to the project, they may become part of the main EndeavorFX codebase.
+Useful improvements may eventually become part of the main EndeavorFX codebase.
 
 Your fork can also remain completely independent.
 
@@ -299,26 +392,29 @@ Whether you're using the original code, modifying it, creating a fork, or buildi
 
 **EndeavorFX V9 is an evolving experimental cinematic lighting solver.**
 
-The V9 shot solver performs heuristic scene analysis and produces a one-shot lighting solution. It is not physically accurate.
+V9 performs heuristic scene analysis and produces a **one-shot lighting solution**.
 
-**Expect:**
+It is not physically accurate and does not attempt to simulate real-world lighting perfectly.
 
-- Experimental features
-- Changing algorithms
-- Performance improvements
-- New presets
-- Bug fixes
-- Occasional lighting that makes you question your life choices 💀
+### Expect
 
-**Known limitations:**
+* Experimental features
+* Changing algorithms
+* Performance improvements
+* New presets
+* Bug fixes
+* Occasional lighting that makes you question your life choices 💀
 
-- Scene analysis is heuristic, not physics-based.
-- Lighting is not physically accurate.
-- Results can vary significantly by scene.
-- Performance depends on scene complexity and quality setting.
-- Algorithms may change between versions.
+### Known Limitations
 
-If something doesn't behave correctly, please report it through [GitHub Issues](https://github.com/WiFi68/EndeavorFX-/issues).
+* Scene analysis is heuristic rather than physics-based.
+* Lighting is not physically accurate.
+* Results can vary between scenes.
+* Performance depends on scene complexity and selected quality.
+* Complex scenes may require additional analysis time.
+* Algorithms may change between versions.
+
+If something doesn't behave correctly, report it through **GitHub Issues**.
 
 ---
 
@@ -326,9 +422,9 @@ If something doesn't behave correctly, please report it through [GitHub Issues](
 
 EndeavorFX is released under the **MIT License**.
 
-See [LICENSE](./LICENSE) for the full license text.
+See `LICENSE` for the full license text.
 
-You are free to use, modify, and distribute EndeavorFX for any purpose.
+You are free to use, modify, and distribute EndeavorFX for any purpose permitted by the MIT License.
 
 ---
 
@@ -350,4 +446,4 @@ It's meant to give you a strong starting point.
 
 ## 🌐 Languages
 
-[English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
+**English** | **Português (Brasil)**
