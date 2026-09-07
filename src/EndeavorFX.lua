@@ -4,12 +4,17 @@
 --
 -- User-facing configuration:
 --     QUALITY = "Showcase" / "Cinematic" / "Balanced"
---     MOOD = "Cinematic" / "GoldenHour" / "Studio" / "Dreamy" / "Horror" / "Neon" / "Night"
---     TIME_OF_DAY = "Dawn" / "Morning" / "Noon" / "GoldenHour" / "Dusk" / "Night" / "Studio"
---     CONTROL_TIME = true/false
+--     MOOD = "Cinematic" / "GoldenHour" / "Studio" / "Dreamy"
+--            / "Horror" / "Neon" / "Night"
+--     TIME_OF_DAY = "Dawn" / "Morning" / "Noon" / "GoldenHour"
+--                   / "Dusk" / "Night" / "Studio"
+--     CONTROL_TIME = true / false
 --
 -- Run this from the Roblox Studio Command Bar.
 -- No plugin required. No external application. Just Lua.
+--
+-- EndeavorFX analyzes the current shot once, solves a cinematic
+-- lighting setup around the scene, applies it, and finishes.
 ----------------------------------------------------------------------
 
 
@@ -28,38 +33,10 @@ local CONTROL_TIME = true
 ----------------------------------------------------------------------
 
 local CONFIG = {
-
-	-- Quality:
-	-- "Showcase" / "Cinematic" / "Balanced"
 	QUALITY = QUALITY,
-
-	-- Mood:
-	-- "Cinematic" / "GoldenHour" / "Studio" /
-	-- "Dreamy" / "Horror" / "Neon" / "Night"
 	MOOD = MOOD,
-
-	-- Time:
-	-- "Dawn" / "Morning" / "Noon" / "GoldenHour" /
-	-- "Dusk" / "Night" / "Studio"
 	TIME_OF_DAY = TIME_OF_DAY,
-
-	-- Should EndeavorFX control ClockTime?
 	CONTROL_TIME = CONTROL_TIME,
-
-	-- Optional live mode.
-	-- false = analyze once and finish.
-	-- true  = keep adapting while the camera moves.
-	LIVE_PREVIEW = false,
-
-	-- Effects
-	ENABLE_ATMOSPHERE = true,
-	ENABLE_BLOOM = true,
-	ENABLE_DOF = true,
-	ENABLE_SUNRAYS = true,
-	ENABLE_COLOR_GRADING = true,
-
-	-- Console information
-	DEBUG = true,
 }
 
 
@@ -69,7 +46,6 @@ local CONFIG = {
 
 local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
-local RunService = game:GetService("RunService")
 
 
 ----------------------------------------------------------------------
@@ -96,7 +72,7 @@ local BACKUP_NAME = "G_EndeavorFX_BACKUP"
 -- QUALITY PROFILES
 ----------------------------------------------------------------------
 
-local QUALITY = {
+local QUALITY_PROFILES = {
 
 	Showcase = {
 		PartLimit = 900,
@@ -109,8 +85,6 @@ local QUALITY = {
 		CameraDistance = 450,
 		FocusDistance = 500,
 		SkyDistance = 220,
-
-		LiveInterval = 1.0,
 	},
 
 	Cinematic = {
@@ -124,8 +98,6 @@ local QUALITY = {
 		CameraDistance = 400,
 		FocusDistance = 450,
 		SkyDistance = 200,
-
-		LiveInterval = 1.25,
 	},
 
 	Balanced = {
@@ -139,12 +111,12 @@ local QUALITY = {
 		CameraDistance = 325,
 		FocusDistance = 400,
 		SkyDistance = 175,
-
-		LiveInterval = 1.5,
 	},
 }
 
-local Quality = QUALITY[CONFIG.QUALITY] or QUALITY.Showcase
+local Quality =
+	QUALITY_PROFILES[CONFIG.QUALITY]
+	or QUALITY_PROFILES.Showcase
 
 
 ----------------------------------------------------------------------
@@ -405,7 +377,10 @@ local TIMES = {
 ----------------------------------------------------------------------
 
 local function clamp(value, minimum, maximum)
-	return math.max(minimum, math.min(maximum, value))
+	return math.max(
+		minimum,
+		math.min(maximum, value)
+	)
 end
 
 
@@ -415,7 +390,10 @@ end
 
 
 local function colorLerp(a, b, t)
-	return a:Lerp(b, clamp(t, 0, 1))
+	return a:Lerp(
+		b,
+		clamp(t, 0, 1)
+	)
 end
 
 
@@ -432,16 +410,26 @@ end
 local function saturation(color)
 
 	local maximum =
-		math.max(color.R, color.G, color.B)
+		math.max(
+			color.R,
+			color.G,
+			color.B
+		)
 
 	local minimum =
-		math.min(color.R, color.G, color.B)
+		math.min(
+			color.R,
+			color.G,
+			color.B
+		)
 
 	if maximum <= 0 then
 		return 0
 	end
 
-	return (maximum - minimum) / maximum
+	return
+		(maximum - minimum) /
+		maximum
 
 end
 
@@ -462,7 +450,8 @@ end
 
 local function distanceWeight(distance)
 
-	return 1 / (1 + distance * 0.018)
+	return 1 /
+		(1 + distance * 0.018)
 
 end
 
@@ -492,8 +481,11 @@ local function createBackup()
 	local folder =
 		Instance.new("Folder")
 
-	folder.Name = BACKUP_NAME
-	folder.Parent = Lighting
+	folder.Name =
+		BACKUP_NAME
+
+	folder.Parent =
+		Lighting
 
 
 	local properties = {
@@ -547,15 +539,21 @@ local function createBackup()
 				valueObject =
 					Instance.new("StringValue")
 
-				value = tostring(value)
+				value =
+					tostring(value)
 
 			end
 
 			if valueObject then
 
-				valueObject.Name = property
-				valueObject.Value = value
-				valueObject.Parent = folder
+				valueObject.Name =
+					property
+
+				valueObject.Value =
+					value
+
+				valueObject.Parent =
+					folder
 
 			end
 
@@ -571,11 +569,16 @@ local function createBackup()
 	local effects =
 		Instance.new("Folder")
 
-	effects.Name = "Effects"
-	effects.Parent = folder
+	effects.Name =
+		"Effects"
+
+	effects.Parent =
+		folder
 
 
-	for _, child in ipairs(Lighting:GetChildren()) do
+	for _, child in ipairs(
+		Lighting:GetChildren()
+		) do
 
 		if child:IsA("PostEffect")
 			or child:IsA("Atmosphere")
@@ -584,7 +587,8 @@ local function createBackup()
 			local clone =
 				child:Clone()
 
-			clone.Parent = effects
+			clone.Parent =
+				effects
 
 		end
 
@@ -596,7 +600,8 @@ local function createBackup()
 end
 
 
-local Backup = createBackup()
+local Backup =
+	createBackup()
 
 
 ----------------------------------------------------------------------
@@ -614,10 +619,17 @@ local function restoreBackup()
 	-- REMOVE ENDEAVORFX EFFECTS
 	------------------------------------------------------------------
 
-	for _, child in ipairs(Lighting:GetChildren()) do
+	for _, child in ipairs(
+		Lighting:GetChildren()
+		) do
 
-		if child.Name:sub(1, #PREFIX) == PREFIX then
+		if child.Name:sub(
+			1,
+			#PREFIX
+		) == PREFIX then
+
 			child:Destroy()
+
 		end
 
 	end
@@ -627,7 +639,9 @@ local function restoreBackup()
 	-- RESTORE LIGHTING
 	------------------------------------------------------------------
 
-	for _, valueObject in ipairs(Backup:GetChildren()) do
+	for _, valueObject in ipairs(
+		Backup:GetChildren()
+		) do
 
 		if valueObject:IsA("Folder") then
 			continue
@@ -641,15 +655,50 @@ local function restoreBackup()
 				Lighting[valueObject.Name] =
 					valueObject.Value
 
+
 			elseif valueObject:IsA("NumberValue") then
 
 				Lighting[valueObject.Name] =
 					valueObject.Value
 
+
 			elseif valueObject:IsA("BoolValue") then
 
 				Lighting[valueObject.Name] =
 					valueObject.Value
+
+
+			elseif valueObject:IsA("StringValue") then
+
+				if valueObject.Name ==
+					"LightingStyle"
+				then
+
+					local enumName =
+						valueObject.Value:match(
+							"%.[^%.]+$"
+						)
+
+					if enumName then
+
+						enumName =
+							enumName:sub(2)
+
+						local enumValue =
+							Enum.LightingStyle[
+								enumName
+							]
+
+						if enumValue then
+
+							Lighting.LightingStyle =
+								enumValue
+
+						end
+
+					end
+
+				end
 
 			end
 
@@ -667,9 +716,12 @@ local function restoreBackup()
 
 	if effects then
 
-		for _, child in ipairs(effects:GetChildren()) do
+		for _, child in ipairs(
+			effects:GetChildren()
+			) do
 
-			child:Clone().Parent = Lighting
+			child:Clone().Parent =
+				Lighting
 
 		end
 
@@ -685,10 +737,17 @@ end
 -- REMOVE OLD ENDEAVORFX EFFECTS
 ----------------------------------------------------------------------
 
-for _, child in ipairs(Lighting:GetChildren()) do
+for _, child in ipairs(
+	Lighting:GetChildren()
+	) do
 
-	if child.Name:sub(1, #PREFIX) == PREFIX then
+	if child.Name:sub(
+		1,
+		#PREFIX
+	) == PREFIX then
+
 		child:Destroy()
+
 	end
 
 end
@@ -698,102 +757,76 @@ end
 -- CREATE EFFECTS
 ----------------------------------------------------------------------
 
-local atmosphere
-local colorCorrection
-local bloom
-local sunRays
-local dof
-local grading
+local atmosphere =
+	Instance.new("Atmosphere")
+
+atmosphere.Name =
+	PREFIX .. "Atmosphere"
+
+atmosphere.Parent =
+	Lighting
 
 
-if CONFIG.ENABLE_ATMOSPHERE then
+local colorCorrection =
+	Instance.new("ColorCorrectionEffect")
 
-	atmosphere =
-		Instance.new("Atmosphere")
+colorCorrection.Name =
+	PREFIX .. "ColorCorrection"
 
-	atmosphere.Name =
-		PREFIX .. "Atmosphere"
-
-	atmosphere.Parent =
-		Lighting
-
-end
+colorCorrection.Parent =
+	Lighting
 
 
-if CONFIG.ENABLE_COLOR_GRADING then
+local grading =
+	Instance.new("ColorGradingEffect")
 
-	colorCorrection =
-		Instance.new("ColorCorrectionEffect")
+grading.Name =
+	PREFIX .. "ColorGrading"
 
-	colorCorrection.Name =
-		PREFIX .. "ColorCorrection"
+pcall(function()
 
-	colorCorrection.Parent =
-		Lighting
+	grading.TonemapperPreset =
+		Enum.TonemapperPreset.Default
 
+end)
 
-	grading =
-		Instance.new("ColorGradingEffect")
-
-	grading.Name =
-		PREFIX .. "ColorGrading"
-
-	pcall(function()
-		grading.TonemapperPreset =
-			Enum.TonemapperPreset.Default
-	end)
-
-	grading.Parent =
-		Lighting
-
-end
+grading.Parent =
+	Lighting
 
 
-if CONFIG.ENABLE_BLOOM then
+local bloom =
+	Instance.new("BloomEffect")
 
-	bloom =
-		Instance.new("BloomEffect")
+bloom.Name =
+	PREFIX .. "Bloom"
 
-	bloom.Name =
-		PREFIX .. "Bloom"
+bloom.Size = 24
+bloom.Threshold = 1.1
 
-	bloom.Size = 24
-	bloom.Threshold = 1.1
-
-	bloom.Parent =
-		Lighting
-
-end
+bloom.Parent =
+	Lighting
 
 
-if CONFIG.ENABLE_SUNRAYS then
+local sunRays =
+	Instance.new("SunRaysEffect")
 
-	sunRays =
-		Instance.new("SunRaysEffect")
+sunRays.Name =
+	PREFIX .. "SunRays"
 
-	sunRays.Name =
-		PREFIX .. "SunRays"
+sunRays.Spread = 0.65
 
-	sunRays.Spread = 0.65
-
-	sunRays.Parent =
-		Lighting
-
-end
+sunRays.Parent =
+	Lighting
 
 
-if CONFIG.ENABLE_DOF then
+local dof =
+	Instance.new("DepthOfFieldEffect")
 
-	dof =
-		Instance.new("DepthOfFieldEffect")
+dof.Name =
+	PREFIX .. "DepthOfField"
 
-	dof.Name =
-		PREFIX .. "DepthOfField"
-
-	dof.Parent =
-		Lighting
-
-end
+dof.Parent =
+	Lighting
 
 
 ----------------------------------------------------------------------
@@ -858,7 +891,7 @@ local function getSkyVisibility(position)
 			Workspace:Raycast(
 				position,
 				SKY_DIRECTIONS[i] *
-				Quality.SkyDistance,
+					Quality.SkyDistance,
 				rayParams
 			)
 
@@ -892,14 +925,41 @@ local function getSamplePoints(part)
 
 		Vector3.zero,
 
-		Vector3.new(size.X * 0.5, 0, 0),
-		Vector3.new(-size.X * 0.5, 0, 0),
+		Vector3.new(
+			size.X * 0.5,
+			0,
+			0
+		),
 
-		Vector3.new(0, size.Y * 0.5, 0),
-		Vector3.new(0, -size.Y * 0.5, 0),
+		Vector3.new(
+			-size.X * 0.5,
+			0,
+			0
+		),
 
-		Vector3.new(0, 0, size.Z * 0.5),
-		Vector3.new(0, 0, -size.Z * 0.5),
+		Vector3.new(
+			0,
+			size.Y * 0.5,
+			0
+		),
+
+		Vector3.new(
+			0,
+			-size.Y * 0.5,
+			0
+		),
+
+		Vector3.new(
+			0,
+			0,
+			size.Z * 0.5
+		),
+
+		Vector3.new(
+			0,
+			0,
+			-size.Z * 0.5
+		),
 	}
 
 
@@ -936,17 +996,27 @@ local function screenWeight(position)
 	local viewport =
 		Camera.ViewportSize
 
-	if viewport.X <= 0 or viewport.Y <= 0 then
+	if viewport.X <= 0
+		or viewport.Y <= 0
+	then
+
 		return 1
+
 	end
 
 
 	local point, visible =
-		Camera:WorldToViewportPoint(position)
+		Camera:WorldToViewportPoint(
+			position
+		)
 
 
-	if not visible or point.Z <= 0 then
+	if not visible
+		or point.Z <= 0
+	then
+
 		return 0
+
 	end
 
 
@@ -958,15 +1028,22 @@ local function screenWeight(position)
 
 
 	local dx =
-		math.abs(nx - 0.5) * 2
+		math.abs(
+			nx - 0.5
+		) * 2
 
 	local dy =
-		math.abs(ny - 0.5) * 2
+		math.abs(
+			ny - 0.5
+		) * 2
 
 
 	local radial =
 		clamp(
-			math.sqrt(dx * dx + dy * dy),
+			math.sqrt(
+				dx * dx +
+				dy * dy
+			),
 			0,
 			1
 		)
@@ -1076,7 +1153,9 @@ local function getFocusDistance()
 
 
 	return distances[
-	math.ceil(#distances / 2)
+		math.ceil(
+			#distances / 2
+		)
 	]
 
 end
@@ -1119,6 +1198,7 @@ local function analyzeFrustum()
 	local warmthTotal = 0
 	local totalWeight = 0
 
+
 	local count =
 		math.min(
 			Quality.FrustumSamples,
@@ -1128,12 +1208,17 @@ local function analyzeFrustum()
 
 	for i = 1, count do
 
-		local uv = samples[i]
+		local uv =
+			samples[i]
+
 
 		local ray =
 			Camera:ViewportPointToRay(
-				Camera.ViewportSize.X * uv.X,
-				Camera.ViewportSize.Y * uv.Y
+				Camera.ViewportSize.X *
+					uv.X,
+
+				Camera.ViewportSize.Y *
+					uv.Y
 			)
 
 
@@ -1141,12 +1226,14 @@ local function analyzeFrustum()
 			Workspace:Raycast(
 				ray.Origin,
 				ray.Direction *
-				Quality.CameraDistance,
+					Quality.CameraDistance,
 				rayParams
 			)
 
 
-		if hit and hit.Instance:IsA("BasePart") then
+		if hit
+			and hit.Instance:IsA("BasePart")
+		then
 
 			local color =
 				hit.Instance.Color
@@ -1167,7 +1254,11 @@ local function analyzeFrustum()
 
 			local depthWeight =
 				1 /
-				(1 + hit.Distance * 0.012)
+				(
+					1 +
+					hit.Distance *
+					0.012
+				)
 
 
 			local weight =
@@ -1222,15 +1313,23 @@ end
 
 local function getLightPosition(light)
 
-	local parent = light.Parent
+	local parent =
+		light.Parent
+
 
 	if parent:IsA("Attachment") then
+
 		return parent.WorldPosition
+
 	end
 
+
 	if parent:IsA("BasePart") then
+
 		return parent.Position
+
 	end
+
 
 	return nil
 
@@ -1253,10 +1352,10 @@ local function analyzeLights()
 		if
 			(
 				instance:IsA("PointLight")
-					or instance:IsA("SpotLight")
-					or instance:IsA("SurfaceLight")
+				or instance:IsA("SpotLight")
+				or instance:IsA("SurfaceLight")
 			)
-				and instance.Enabled
+			and instance.Enabled
 		then
 
 			local position =
@@ -1272,10 +1371,14 @@ local function analyzeLights()
 					).Magnitude
 
 
-				if distance <= Quality.CameraDistance then
+				if distance <=
+					Quality.CameraDistance
+				then
 
 					local distanceFactor =
-						distanceWeight(distance)
+						distanceWeight(
+							distance
+						)
 
 
 					local brightnessValue =
@@ -1321,7 +1424,10 @@ local function analyzeLights()
 	table.sort(
 		candidates,
 		function(a, b)
-			return a.Importance > b.Importance
+
+			return a.Importance >
+				b.Importance
+
 		end
 	)
 
@@ -1353,7 +1459,8 @@ local function analyzeLights()
 			data.Importance
 
 
-		energy += importance
+		energy +=
+			importance
 
 
 		lightBrightness +=
@@ -1366,7 +1473,9 @@ local function analyzeLights()
 
 
 		lightWarmth +=
-			warmth(light.Color) *
+			warmth(
+				light.Color
+			) *
 			importance
 
 
@@ -1376,7 +1485,9 @@ local function analyzeLights()
 				importance
 
 			keyWarmth =
-				warmth(light.Color)
+				warmth(
+					light.Color
+				)
 
 		end
 
@@ -1385,9 +1496,14 @@ local function analyzeLights()
 
 	if count > 0 then
 
-		energy /= count
-		lightBrightness /= count
-		lightWarmth /= count
+		energy /=
+			count
+
+		lightBrightness /=
+			count
+
+		lightWarmth /=
+			count
 
 	end
 
@@ -1463,7 +1579,9 @@ local function analyzeScene()
 	------------------------------------------------------------------
 
 	scene.SkyVisibility =
-		getSkyVisibility(cameraPosition)
+		getSkyVisibility(
+			cameraPosition
+		)
 
 	scene.Enclosure =
 		1 - scene.SkyVisibility
@@ -1520,7 +1638,9 @@ local function analyzeScene()
 	scene.SunAlignment =
 		math.abs(
 			clamp(
-				cameraForward:Dot(sunDirection),
+				cameraForward:Dot(
+					sunDirection
+				),
 				-1,
 				1
 			)
@@ -1529,7 +1649,10 @@ local function analyzeScene()
 
 	scene.SunVisibility =
 		clamp(
-			(sunDirection.Y + 0.15) / 0.65,
+			(
+				sunDirection.Y +
+				0.15
+			) / 0.65,
 			0,
 			1
 		)
@@ -1559,9 +1682,14 @@ local function analyzeScene()
 				).Magnitude
 
 
-			if distance <= Quality.CameraDistance then
+			if distance <=
+				Quality.CameraDistance
+			then
 
-				table.insert(parts, instance)
+				table.insert(
+					parts,
+					instance
+				)
 
 			end
 
@@ -1574,7 +1702,9 @@ local function analyzeScene()
 	-- REDUCE SAMPLE COUNT
 	------------------------------------------------------------------
 
-	if #parts > Quality.PartLimit then
+	if #parts >
+		Quality.PartLimit
+	then
 
 		local reduced = {}
 
@@ -1593,16 +1723,19 @@ local function analyzeScene()
 
 
 			if parts[index] then
+
 				table.insert(
 					reduced,
 					parts[index]
 				)
+
 			end
 
 		end
 
 
-		parts = reduced
+		parts =
+			reduced
 
 	end
 
@@ -1632,11 +1765,15 @@ local function analyzeScene()
 
 
 		local distanceFactor =
-			distanceWeight(distance)
+			distanceWeight(
+				distance
+			)
 
 
 		local compositionWeight =
-			screenWeight(part.Position)
+			screenWeight(
+				part.Position
+			)
 
 
 		if compositionWeight > 0 then
@@ -1697,13 +1834,19 @@ local function analyzeScene()
 				local ray =
 					Workspace:Raycast(
 						cameraPosition,
-						point - cameraPosition,
+						point -
+							cameraPosition,
 						rayParams
 					)
 
 
-				if ray and ray.Instance ~= part then
-					visibleWeight = 0.30
+				if ray
+					and ray.Instance ~= part
+				then
+
+					visibleWeight =
+						0.30
+
 				end
 
 
@@ -1731,7 +1874,8 @@ local function analyzeScene()
 					weight
 
 
-				totalWeight += weight
+				totalWeight +=
+					weight
 
 			end
 
@@ -1763,7 +1907,8 @@ local function analyzeScene()
 	end
 
 
-	scene.Parts = #parts
+	scene.Parts =
+		#parts
 
 end
 
@@ -1814,8 +1959,10 @@ local function solve()
 
 	local cameraDarkness =
 		clamp(
-			(0.45 - scene.CameraLuminance)
-			/ 0.45,
+			(
+				0.45 -
+				scene.CameraLuminance
+			) / 0.45,
 			0,
 			1
 		)
@@ -1823,19 +1970,23 @@ local function solve()
 
 	local cameraBrightness =
 		clamp(
-			(scene.CameraLuminance - 0.58)
-			/ 0.42,
+			(
+				scene.CameraLuminance -
+				0.58
+			) / 0.42,
 			0,
 			1
 		)
 
 
 	exposure +=
-		cameraDarkness * 0.24
+		cameraDarkness *
+		0.24
 
 
 	exposure -=
-		cameraBrightness * 0.20
+		cameraBrightness *
+		0.20
 
 
 	------------------------------------------------------------------
@@ -1844,8 +1995,10 @@ local function solve()
 
 	local sceneDarkness =
 		clamp(
-			(0.38 - scene.Luminance)
-			/ 0.38,
+			(
+				0.38 -
+				scene.Luminance
+			) / 0.38,
 			0,
 			1
 		)
@@ -1853,19 +2006,23 @@ local function solve()
 
 	local sceneBrightness =
 		clamp(
-			(scene.Luminance - 0.62)
-			/ 0.38,
+			(
+				scene.Luminance -
+				0.62
+			) / 0.38,
 			0,
 			1
 		)
 
 
 	exposure +=
-		sceneDarkness * 0.16
+		sceneDarkness *
+		0.16
 
 
 	exposure -=
-		sceneBrightness * 0.14
+		sceneBrightness *
+		0.14
 
 
 	------------------------------------------------------------------
@@ -1873,11 +2030,14 @@ local function solve()
 	------------------------------------------------------------------
 
 	exposure -=
-		scene.LightEnergy * 0.80 * 0.22
+		scene.LightEnergy *
+		0.80 *
+		0.22
 
 
 	exposure -=
-		scene.KeyEnergy * 0.10
+		scene.KeyEnergy *
+		0.10
 
 
 	exposure +=
@@ -1897,8 +2057,13 @@ local function solve()
 	ambient =
 		colorLerp(
 			ambient,
-			Color3.fromRGB(68, 68, 78),
-			interior * 0.40
+			Color3.fromRGB(
+				68,
+				68,
+				78
+			),
+			interior *
+			0.40
 		)
 
 
@@ -1906,7 +2071,9 @@ local function solve()
 	-- WARMTH
 	------------------------------------------------------------------
 
-	if math.abs(scene.Warmth) > 0.06 then
+	if math.abs(
+		scene.Warmth
+	) > 0.06 then
 
 		local warmthColor
 
@@ -1936,7 +2103,9 @@ local function solve()
 			colorLerp(
 				ambient,
 				warmthColor,
-				math.abs(scene.Warmth) * 0.12
+				math.abs(
+					scene.Warmth
+				) * 0.12
 			)
 
 	end
@@ -1946,7 +2115,9 @@ local function solve()
 	-- KEY LIGHT COLOR
 	------------------------------------------------------------------
 
-	if math.abs(scene.KeyWarmth) > 0.08 then
+	if math.abs(
+		scene.KeyWarmth
+	) > 0.08 then
 
 		local keyColor
 
@@ -1976,7 +2147,9 @@ local function solve()
 			colorLerp(
 				ambient,
 				keyColor,
-				math.abs(scene.KeyWarmth) * 0.08
+				math.abs(
+					scene.KeyWarmth
+				) * 0.08
 			)
 
 	end
@@ -1991,7 +2164,8 @@ local function solve()
 
 
 	bloom +=
-		scene.LightBrightness * 0.10
+		scene.LightBrightness *
+		0.10
 
 
 	if scene.Emissive > 0 then
@@ -1999,8 +2173,11 @@ local function solve()
 		bloom +=
 			clamp(
 				scene.Emissive /
-				math.max(scene.Parts, 1)
-				* 0.18,
+				math.max(
+					scene.Parts,
+					1
+				) *
+				0.18,
 				0,
 				0.12
 			)
@@ -2017,7 +2194,8 @@ local function solve()
 		scene.SunVisibility *
 		(
 			0.55 +
-			scene.SunAlignment * 0.45
+			scene.SunAlignment *
+			0.45
 		)
 
 
@@ -2031,7 +2209,10 @@ local function solve()
 
 	local reflective =
 		clamp(
-			(scene.Glass + scene.Metal) /
+			(
+				scene.Glass +
+				scene.Metal
+			) /
 			math.max(
 				scene.Glass +
 				scene.Metal +
@@ -2044,7 +2225,9 @@ local function solve()
 
 
 	dof *=
-		1 - reflective * 0.20
+		1 -
+		reflective *
+		0.20
 
 
 	------------------------------------------------------------------
@@ -2056,11 +2239,13 @@ local function solve()
 
 
 	atmosphereDensity +=
-		interior * 0.025
+		interior *
+		0.025
 
 
 	atmosphereDensity -=
-		scene.SunVisibility * 0.015
+		scene.SunVisibility *
+		0.015
 
 
 	------------------------------------------------------------------
@@ -2076,7 +2261,8 @@ local function solve()
 				1
 			),
 
-		Ambient = ambient,
+		Ambient =
+			ambient,
 
 		OutdoorAmbient =
 			colorLerp(
@@ -2085,7 +2271,8 @@ local function solve()
 				0.10
 			),
 
-		Tint = tint,
+		Tint =
+			tint,
 
 		ShadowSoftness =
 			mood.ShadowSoftness,
@@ -2231,14 +2418,22 @@ local function apply(solution)
 	safeSet(
 		Lighting,
 		"ColorShift_Bottom",
-		Color3.new(0, 0, 0)
+		Color3.new(
+			0,
+			0,
+			0
+		)
 	)
 
 
 	safeSet(
 		Lighting,
 		"ColorShift_Side",
-		Color3.new(0, 0, 0)
+		Color3.new(
+			0,
+			0,
+			0
+		)
 	)
 
 
@@ -2246,101 +2441,81 @@ local function apply(solution)
 	-- ATMOSPHERE
 	------------------------------------------------------------------
 
-	if atmosphere then
+	atmosphere.Density =
+		solution.AtmosphereDensity
 
-		atmosphere.Density =
-			solution.AtmosphereDensity
+	atmosphere.Offset =
+		solution.AtmosphereOffset
 
-		atmosphere.Offset =
-			solution.AtmosphereOffset
+	atmosphere.Haze =
+		solution.AtmosphereHaze
 
-		atmosphere.Haze =
-			solution.AtmosphereHaze
+	atmosphere.Glare =
+		solution.AtmosphereGlare
 
-		atmosphere.Glare =
-			solution.AtmosphereGlare
+	atmosphere.Color =
+		solution.AtmosphereColor
 
-		atmosphere.Color =
-			solution.AtmosphereColor
-
-		atmosphere.Decay =
-			solution.AtmosphereDecay
-
-	end
+	atmosphere.Decay =
+		solution.AtmosphereDecay
 
 
 	------------------------------------------------------------------
 	-- COLOR
 	------------------------------------------------------------------
 
-	if colorCorrection then
+	colorCorrection.Brightness =
+		solution.Brightness
 
-		colorCorrection.Brightness =
-			solution.Brightness
+	colorCorrection.Contrast =
+		solution.Contrast
 
-		colorCorrection.Contrast =
-			solution.Contrast
+	colorCorrection.Saturation =
+		solution.Saturation
 
-		colorCorrection.Saturation =
-			solution.Saturation
-
-		colorCorrection.TintColor =
-			solution.Tint
-
-	end
+	colorCorrection.TintColor =
+		solution.Tint
 
 
 	------------------------------------------------------------------
 	-- BLOOM
 	------------------------------------------------------------------
 
-	if bloom then
-
-		bloom.Intensity =
-			solution.Bloom
-
-	end
+	bloom.Intensity =
+		solution.Bloom
 
 
 	------------------------------------------------------------------
 	-- SUN RAYS
 	------------------------------------------------------------------
 
-	if sunRays then
-
-		sunRays.Intensity =
-			solution.SunRays
-
-	end
+	sunRays.Intensity =
+		solution.SunRays
 
 
 	------------------------------------------------------------------
 	-- DOF
 	------------------------------------------------------------------
 
-	if dof then
+	dof.FocusDistance =
+		solution.FocusDistance
 
-		dof.FocusDistance =
-			solution.FocusDistance
+dof.InFocusRadius =
+		clamp(
+			solution.FocusDistance * 0.20,
+			8,
+			60
+		)
 
-		dof.InFocusRadius =
-			clamp(
-				solution.FocusDistance * 0.20,
-				8,
-				60
-			)
+dof.NearIntensity =
+		clamp(
+			solution.DOF * 0.55,
+			0,
+			0.30
+		)
 
-		dof.NearIntensity =
-			clamp(
-				solution.DOF * 0.55,
-				0,
-				0.30
-			)
-
-		dof.FarIntensity =
-			solution.DOF
-
-	end
+dof.FarIntensity =
+		solution.DOF
 
 end
 
@@ -2408,7 +2583,9 @@ end
 -- EXECUTE ANALYSIS AND SOLVE
 ----------------------------------------------------------------------
 
-print("[EndeavorFX V9] Analyzing shot...")
+print(
+	"[EndeavorFX V9] Analyzing shot..."
+)
 
 
 analyzeScene()
@@ -2418,181 +2595,129 @@ local solution =
 	solve()
 
 
-apply(solution)
+apply(
+	solution
+)
 
 
 ----------------------------------------------------------------------
--- OPTIONAL LIVE PREVIEW
+-- COMPLETION OUTPUT
 ----------------------------------------------------------------------
 
-if CONFIG.LIVE_PREVIEW then
+print("")
+print("══════════════════════════════════════════")
+print("        EndeavorFX V9 — SHOT SOLVER")
+print("══════════════════════════════════════════")
 
-	local elapsed = 0
-	local lastCamera = Camera.CFrame
+print(
+	"Quality:",
+	CONFIG.QUALITY
+)
 
+print(
+	"Mood:",
+	CONFIG.MOOD
+)
 
-	RunService.RenderStepped:Connect(
-		function(dt)
+print(
+	"Time:",
+	CONFIG.TIME_OF_DAY
+)
 
-			elapsed += dt
+print("")
 
+print(
+	"Scene Parts:",
+	scene.Parts
+)
 
-			local currentCamera =
-				Camera.CFrame
-
-
-			local moved =
-				(
-					currentCamera.Position -
-					lastCamera.Position
-				).Magnitude > 1.5
-
-
-			local rotated =
-				1 -
-				clamp(
-					currentCamera.LookVector:Dot(
-						lastCamera.LookVector
-					),
-					-1,
-					1
-				)
-
-
-			lastCamera =
-				currentCamera
-
-
-			if
-				elapsed >= Quality.LiveInterval
-				or moved
-				or rotated > 0.035
-			then
-
-				elapsed = 0
-
-				analyzeScene()
-
-				local newSolution =
-					solve()
-
-
-				apply(newSolution)
-
-			end
-
-		end
+print(
+	"Scene Luminance:",
+	string.format(
+		"%.3f",
+		scene.Luminance
 	)
+)
 
-end
-
-
-----------------------------------------------------------------------
--- DEBUG OUTPUT
-----------------------------------------------------------------------
-
-if CONFIG.DEBUG then
-
-	print("")
-	print("══════════════════════════════════════════")
-	print("        EndeavorFX V9 — SHOT SOLVER")
-	print("══════════════════════════════════════════")
-
-	print("Quality:", CONFIG.QUALITY)
-	print("Mood:", CONFIG.MOOD)
-	print("Time:", CONFIG.TIME_OF_DAY)
-
-	print("")
-
-	print("Scene Parts:", scene.Parts)
-
-	print(
-		"Scene Luminance:",
-		string.format(
-			"%.3f",
-			scene.Luminance
-		)
+print(
+	"Camera Luminance:",
+	string.format(
+		"%.3f",
+		scene.CameraLuminance
 	)
+)
 
-	print(
-		"Camera Luminance:",
-		string.format(
-			"%.3f",
-			scene.CameraLuminance
-		)
+print(
+	"Warmth:",
+	string.format(
+		"%.3f",
+		scene.Warmth
 	)
+)
 
-	print(
-		"Warmth:",
-		string.format(
-			"%.3f",
-			scene.Warmth
-		)
+print(
+	"Sky Visibility:",
+	string.format(
+		"%.3f",
+		scene.SkyVisibility
 	)
+)
 
-	print(
-		"Sky Visibility:",
-		string.format(
-			"%.3f",
-			scene.SkyVisibility
-		)
+print(
+	"Focus:",
+	string.format(
+		"%.1f studs",
+		scene.FocusDistance
 	)
+)
 
-	print(
-		"Focus:",
-		string.format(
-			"%.1f studs",
-			scene.FocusDistance
-		)
+print("")
+
+print(
+	"Exposure:",
+	string.format(
+		"%.3f",
+		solution.Exposure
 	)
+)
 
-	print("")
-
-	print(
-		"Exposure:",
-		string.format(
-			"%.3f",
-			solution.Exposure
-		)
+print(
+	"Bloom:",
+	string.format(
+		"%.3f",
+		solution.Bloom
 	)
+)
 
-	print(
-		"Bloom:",
-		string.format(
-			"%.3f",
-			solution.Bloom
-		)
+print(
+	"DOF:",
+	string.format(
+		"%.3f",
+		solution.DOF
 	)
+)
 
-	print(
-		"DOF:",
-		string.format(
-			"%.3f",
-			solution.DOF
-		)
+print(
+	"Sun Rays:",
+	string.format(
+		"%.3f",
+		solution.SunRays
 	)
+)
 
-	print(
-		"Sun Rays:",
-		string.format(
-			"%.3f",
-			solution.SunRays
-		)
-	)
-
-	print("")
-
-	print("EndeavorFX V9 READY.")
-	print("══════════════════════════════════════════")
-	print("")
-
-end
+print("")
+print("EndeavorFX V9 READY.")
+print("══════════════════════════════════════════")
+print("")
 
 
 ----------------------------------------------------------------------
--- BACKUP LOCATION
+-- BACKUP
 --
--- The backup remains in Lighting.G_EndeavorFX_BACKUP for manual
--- restoration if needed. Call restoreBackup() before the script
--- finishes to restore manually.
+-- EndeavorFX stores the original Lighting configuration in:
+--
+--     Lighting.G_EndeavorFX_BACKUP
+--
+-- The backup is preserved so the original lighting state can be
+-- recovered if needed.
 ----------------------------------------------------------------------
