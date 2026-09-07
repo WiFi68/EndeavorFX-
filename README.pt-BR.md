@@ -4,9 +4,11 @@
 
 Analise a cena. Entenda o plano. Melhore a imagem.
 
-EndeavorFX é um sistema de iluminação Lua livre e de código aberto para Roblox, projetado para analisar uma cena e construir automaticamente uma configuração de iluminação cinemática ao redor da câmera ativa.
+EndeavorFX é um sistema de iluminação em Lua, gratuito e de código aberto, que analisa a cena atual e a câmera ativa para construir uma solução de iluminação cinemática ao redor do plano.
 
-**Não há plugin oficial.** EndeavorFX é um sistema Lua autossuficiente da Command Bar. Copie o código, cole na Command Bar e execute.
+**Não existe um plugin oficial.**
+
+EndeavorFX é um sistema autossuficiente para a **Command Bar**. Copie o código, cole na Command Bar do Roblox Studio e execute.
 
 «Construído por WiFi. Melhorado por todos.»
 
@@ -14,35 +16,35 @@ EndeavorFX é um sistema de iluminação Lua livre e de código aberto para Robl
 
 ## ✨ Recursos
 
-**V9 implementa:**
+**EndeavorFX V9 inclui:**
 
-- 🎥 **Análise de Plano** — Analisa a câmera ativa, composição, conteúdo da cena visível, importância em espaço de tela e características do plano.
+* 🎥 **Análise do Plano** — Analisa a câmera ativa, composição do viewport, conteúdo visível da cena, importância em espaço de tela e características do plano.
 
-- 🧠 **Iluminação Adaptativa** — Analisa luminância da cena, cor, materiais, iluminação existente e composição para determinar uma solução de iluminação cinemática apropriada.
+* 🧠 **Iluminação Adaptativa** — Avalia luminância, cor, materiais, iluminação existente e composição da cena para calcular uma solução de iluminação cinemática.
 
-- 🎯 **Foco Automático Multi-Ray** — Usa múltiplos raios de câmera para estimar uma distância de foco mais estável em vez de confiar em um único raio central.
+* 🎯 **Foco Automático Multi-Ray** — Usa múltiplos raios da câmera para estimar uma distância de foco mais estável em vez de depender de um único raio central.
 
-- 💡 **Análise de Luzes Existentes** — Analisa PointLights, SpotLights e SurfaceLights existentes e incorpora sua contribuição à solução de iluminação.
+* 💡 **Análise de Luzes Existentes** — Analisa PointLights, SpotLights e SurfaceLights existentes e incorpora sua contribuição à solução.
 
-- 🧱 **Consciência de Materiais** — Considera características relevantes de materiais, incluindo Metal, Glass e superfícies Neon/emissivas.
+* 🧱 **Consciência de Materiais** — Considera materiais relevantes, incluindo Metal, Glass e superfícies Neon/emissivas.
 
-- 🌅 **Análise de Sol / Luz Chave** — Considera a direção do sol da cena e a iluminação existente ao resolver o plano.
+* 🌅 **Análise do Sol e Luz Chave** — Considera a direção do sol e as fontes de luz existentes ao resolver o plano.
 
-- 🏠 **Consciência Interior / Exterior** — Usa heurísticas de encerramento de cena e visibilidade do céu para distinguir entre diferentes contextos de iluminação.
+* 🏠 **Consciência Interior / Exterior** — Usa visibilidade do céu e heurísticas de encerramento da cena para determinar o contexto de iluminação.
 
-- 🌫️ **Solucionador de Atmosfera** — Determina dinamicamente configurações atmosféricas com base no humor, hora do dia, condições da cena e plano resolvido.
+* 🌫️ **Solucionador de Atmosfera** — Calcula dinamicamente as configurações atmosféricas a partir do humor, hora do dia e condições analisadas da cena.
 
-- 🎨 **Pós-Processamento Cinemático** — Suporta Bloom, Color Correction, Depth of Field, Sun Rays e Color Grading.
+* 🎨 **Pós-Processamento Cinemático** — Suporta Bloom, Color Correction, Depth of Field, Sun Rays e Color Grading.
 
-- 🎞️ **Color Grading** — Usa ColorGradingEffect do Roblox e configuração apropriada do tonemapper quando suportado.
+* 🎞️ **Tonemapping** — Usa o ColorGradingEffect do Roblox com uma configuração de tonemapper compatível.
 
-- 🌅 **Predefinições de Hora do Dia** — Dawn, Morning, Noon, GoldenHour, Dusk, Night e Studio.
+* 🌅 **Predefinições de Hora do Dia** — Dawn, Morning, Noon, GoldenHour, Dusk, Night e Studio.
 
-- 🎭 **Predefinições de Humor** — Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon e Night.
+* 🎭 **Predefinições de Humor** — Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon e Night.
 
-- ⚙️ **Modos de Qualidade** — Showcase, Cinematic e Balanced. Qualidade controla quanto de análise é realizado internamente.
+* ⚙️ **Modos de Qualidade** — Showcase, Cinematic e Balanced. A qualidade determina quanto de análise de cena é realizado.
 
-- 💾 **Backup e Restauração** — Protege a configuração de iluminação original antes de EndeavorFX modificá-la.
+* 💾 **Backup Automático** — Cria um snapshot protegido da configuração original de Lighting antes de modificá-la.
 
 ---
 
@@ -50,188 +52,272 @@ EndeavorFX é um sistema de iluminação Lua livre e de código aberto para Robl
 
 ### Roblox Studio
 
-1. Abra seu projeto do Roblox Studio.
+1. Abra seu projeto no Roblox Studio.
 2. Abra a **Command Bar**.
-3. Abra `src/EndeavorFX.lua` neste repositório.
-4. Copie o código inteiro.
+3. Abra `src/EndeavorFX.lua` deste repositório.
+4. Copie o script inteiro.
 5. Cole na Command Bar.
-6. Edite as quatro configurações de usuário no topo, se desejar:
-   - `QUALITY`
-   - `MOOD`
-   - `TIME_OF_DAY`
-   - `CONTROL_TIME`
+6. Edite as quatro configurações no topo, se desejar.
 7. Execute o script.
 
 É isso.
 
-- **Sem instalação de plugin.**
-- **Sem aplicação externa.**
-- **Sem software pago.**
-- **Apenas Lua.**
+* **Sem instalação de plugin.**
+* **Sem aplicação externa.**
+* **Sem software pago.**
+* **Apenas Lua.**
+
+EndeavorFX analisa o plano atual, resolve a iluminação, aplica o resultado e termina.
+
+Ele **não** fica executando continuamente em segundo plano.
 
 ---
 
 ## ⚙️ Configuração
 
-EndeavorFX expõe quatro configurações visíveis para o usuário:
+EndeavorFX expõe intencionalmente apenas quatro configurações para o usuário:
 
 ```lua
-local QUALITY = "Showcase"      -- Showcase, Cinematic ou Balanced
-local MOOD = "Cinematic"        -- Cinematic, GoldenHour, Studio, Dreamy, Horror, Neon ou Night
-local TIME_OF_DAY = "Morning"   -- Dawn, Morning, Noon, GoldenHour, Dusk, Night ou Studio
-local CONTROL_TIME = true       -- true para atualizar ClockTime, false para deixá-lo inalterado
+local QUALITY = "Showcase"
+local MOOD = "Cinematic"
+local TIME_OF_DAY = "Morning"
+local CONTROL_TIME = true
 ```
+
+Essas são as únicas configurações que a maioria dos usuários precisa alterar.
 
 ### QUALITY
 
-Controla quanto de análise de cena é realizado:
+Controla quanto de análise de cena é realizado.
 
-- **Showcase** — Qualidade máxima. Analisa mais partes, luzes e amostras de viewport para o resultado de qualidade mais alta. Use quando o desempenho não é uma preocupação.
-- **Cinematic** — Qualidade equilibrada. Boa análise com desempenho razoável. Recomendado para a maioria dos casos.
-- **Balanced** — Análise rápida. Varredura de cena mais leve para melhor desempenho em máquinas lentas ou cenas complexas.
+* **Showcase** — Análise máxima. Usa mais amostras de cena, luzes e análise da câmera para obter o resultado mais completo.
+* **Cinematic** — Equilíbrio entre análise e desempenho. Recomendado para a maioria das cenas.
+* **Balanced** — Análise mais rápida e leve para máquinas mais lentas ou cenas complexas.
+
+Qualidade maior não significa diretamente "gráficos melhores".
+
+Significa **mais análise antes de calcular a solução de iluminação**.
 
 ### MOOD
 
-Define o tom emocional e a estética de iluminação:
+Define a estética cinematográfica geral.
 
-- **Cinematic** — Iluminação cinemática profissional e neutra.
-- **GoldenHour** — Estética quente e dourada ao sol.
-- **Studio** — Iluminação de estúdio limpa e brilhante.
-- **Dreamy** — Aparência suave, etérea e super saturada.
-- **Horror** — Atmosfera sombria, dessaturada e ominosa.
-- **Neon** — Alta saturação, sintético elétrico.
-- **Night** — Iluminação fresca e noturna.
+* **Cinematic** — Iluminação cinematográfica neutra e equilibrada.
+* **GoldenHour** — Iluminação quente e dourada.
+* **Studio** — Iluminação limpa e controlada de estúdio.
+* **Dreamy** — Iluminação suave, clara e atmosférica.
+* **Horror** — Iluminação escura, dessaturada e opressiva.
+* **Neon** — Iluminação saturada, brilhante e elétrica.
+* **Night** — Iluminação fria e escura de noite.
 
 ### TIME_OF_DAY
 
-Controla o ângulo do sol, cor do céu e matiz atmosférico:
+Define a hora do dia simulada pelo solucionador.
 
-- **Dawn** — Início da manhã, luz fresca.
-- **Morning** — Meio da manhã, luz clara.
-- **Noon** — Meio-dia, sol em cima.
-- **GoldenHour** — Final da tarde, luz dourada quente.
-- **Dusk** — Início da noite, luz roxa transitória.
-- **Night** — Noturno, escuridão azul fresca.
-- **Studio** — Meio-dia neutro (não altera ClockTime se CONTROL_TIME for falso).
+Predefinições disponíveis:
+
+* **Dawn**
+* **Morning**
+* **Noon**
+* **GoldenHour**
+* **Dusk**
+* **Night**
+* **Studio**
 
 ### CONTROL_TIME
 
-Se `true`, EndeavorFX define Lighting.ClockTime para corresponder à predefinição TIME_OF_DAY. Se `false`, o ClockTime é deixado inalterado.
+Controla se o EndeavorFX altera o `Lighting.ClockTime`.
+
+```lua
+local CONTROL_TIME = true
+```
+
+* `true` — O EndeavorFX define o `ClockTime` de acordo com o `TIME_OF_DAY`.
+* `false` — O EndeavorFX mantém o `ClockTime` existente.
 
 ---
 
 ## 🎥 Como Funciona
 
-EndeavorFX opera como um solucionador heurístico de um único plano:
+O EndeavorFX V9 é um **solucionador heurístico de iluminação de plano único**.
 
-```
-ANÁLISE DE CÂMERA
-    ↓
-ANÁLISE DE CENA
-    ↓
-ANÁLISE DE LUZES
-    ↓
-SOLUCIONADOR DE PLANO
-    ↓
-APLICAÇÃO DE ILUMINAÇÃO
-    ↓
+```text
+ANÁLISE DA CÂMERA
+        ↓
+ANÁLISE DA CENA
+        ↓
+ANÁLISE DAS LUZES
+        ↓
+ANÁLISE DO SOL / CÉU
+        ↓
+SOLUCIONADOR DO PLANO
+        ↓
+APLICAÇÃO DA ILUMINAÇÃO
+        ↓
 PÓS-PROCESSAMENTO
-    ↓
+        ↓
 PRONTO
 ```
 
 ### Pipeline
 
-1. **Análise de Câmera** — Analisa a câmera ativa, composição do viewport e distância de foco multi-ray.
+#### 1. Análise da Câmera
 
-2. **Análise de Cena** — Varre partes visíveis dentro do frustum da câmera. Analisa cores, materiais (Metal, Glass, Neon), saturação e calor. Computa pesos de composição em espaço de tela.
+O EndeavorFX analisa a câmera ativa, composição do viewport, geometria visível, importância em espaço de tela e distância de foco.
 
-3. **Análise de Luzes** — Analisa PointLights, SpotLights e SurfaceLights existentes. Computa sua contribuição de energia, brilho e calor.
+A análise de foco multi-ray ajuda a produzir um alvo de profundidade de campo mais estável do que um único raio central.
 
-4. **Análise de Céu e Sol** — Determina visibilidade do céu e alinhamento da direção do sol. Estima contexto interior vs. exterior.
+#### 2. Análise da Cena
 
-5. **Solucionador de Plano** — Combina todos os dados de análise com o Humor e Hora do Dia selecionados para computar:
-   - Compensação de exposição
-   - Cor ambiente
-   - Cor ambiente externa
-   - Deslocamento de cor e matiz
-   - Intensidade de bloom
-   - Intensidade de raios solares
-   - Parâmetros de profundidade de campo
-   - Densidade de atmosfera
+O conteúdo visível da cena é amostrado dentro da visão da câmera.
 
-6. **Aplicação** — Aplica a solução à Iluminação e cria/atualiza efeitos de pós-processamento.
+O solucionador considera:
 
-### Filosofia de Design
+* Luminância da cena
+* Cor
+* Saturação
+* Calor
+* Importância em espaço de tela
+* Materiais
+* Objetos visíveis grandes
+* Metal
+* Glass
+* Superfícies Neon/emissivas
+* Encerramento da cena
+* Visibilidade do céu
 
-EndeavorFX é **heurístico**, não fisicamente preciso. Usa regras e heurísticas para fazer suposições educadas sobre as necessidades de iluminação da cena. Os resultados podem variar por cena, e os algoritmos podem mudar entre versões.
+#### 3. Análise das Luzes
 
-O sistema é projetado para produzir um **ponto de partida cinemático forte** em vez de fotorrealismo perfeito.
+Instâncias `PointLight`, `SpotLight` e `SurfaceLight` existentes são analisadas.
+
+Sua contribuição é incorporada à solução em vez de simplesmente ser ignorada.
+
+#### 4. Análise do Sol e do Céu
+
+O solucionador analisa a visibilidade do céu e a direção do sol.
+
+Isso ajuda a determinar se o plano se comporta mais como um ambiente externo, parcialmente fechado ou interno.
+
+#### 5. Solucionador do Plano
+
+Os dados analisados são combinados com o **Quality**, **Mood** e **Time of Day** selecionados.
+
+O solucionador calcula valores como:
+
+* Compensação de exposição
+* Iluminação ambiente
+* Iluminação ambiente externa
+* Deslocamento de cor
+* Matiz da iluminação
+* Bloom
+* Sun rays
+* Depth of field
+* Atmosfera
+* Distância de foco
+
+#### 6. Aplicação
+
+A solução calculada é aplicada ao Lighting do Roblox e aos efeitos de pós-processamento necessários.
+
+Depois que o plano é resolvido, o script termina.
 
 ---
 
 ## 🎭 Predefinições de Humor
 
-Cada humor define uma estética única com intensidades específicas de exposição, cor, atmosfera e efeitos:
+Cada humor fornece uma estética inicial diferente.
 
-- **Cinematic** — Profissional, neutro, equilibrado para uso geral.
-- **GoldenHour** — Quente, saturado, bloom brilhante e raios solares.
-- **Studio** — Limpo, brilhante, efeitos atmosféricos mínimos.
-- **Dreamy** — Macio, super saturado, bloom pesado e neblina.
-- **Horror** — Escuro, dessaturado, bloom mínimo, atmosfera opressiva.
-- **Neon** — Alta saturação, bloom alto, atmosfera elétrica.
-- **Night** — Fresco, escuro, atmosfera e bloom moderados.
+| Humor          | Descrição                                       |
+| -------------- | ----------------------------------------------- |
+| **Cinematic**  | Iluminação cinematográfica neutra e equilibrada |
+| **GoldenHour** | Luz solar quente e saturada                     |
+| **Studio**     | Iluminação limpa e brilhante                    |
+| **Dreamy**     | Iluminação suave e atmosférica                  |
+| **Horror**     | Iluminação escura, dessaturada e opressiva      |
+| **Neon**       | Iluminação saturada, brilhante e elétrica       |
+| **Night**      | Iluminação fria e noturna                       |
+
+O humor não substitui completamente a cena.
+
+Ele funciona como uma **estética-alvo** que o solucionador adapta ao plano analisado.
 
 ---
 
 ## 🌅 Hora do Dia
 
-As predefinições de Hora do Dia controlam o ClockTime do sol e o matiz da iluminação:
+As predefinições disponíveis são:
 
-| Predefinição | ClockTime | Matiz                   |
-|------------|-----------|-------------------------|
-| Dawn       | 6.2       | Laranja quente (nascer) |
-| Morning    | 9.0       | Branco neutro           |
-| Noon       | 12.5      | Branco brilhante        |
-| GoldenHour | 17.2      | Laranja dourado quente  |
-| Dusk       | 18.4      | Roxo fresco             |
-| Night      | 22.0      | Azul fresco             |
-| Studio     | 12.0      | Branco neutro           |
+| Predefinição   | ClockTime | Característica Geral                   |
+| -------------- | --------: | -------------------------------------- |
+| **Dawn**       |       6.2 | Início da manhã, transição quente/fria |
+| **Morning**    |       9.0 | Luz clara da manhã                     |
+| **Noon**       |      12.5 | Luz diurna forte                       |
+| **GoldenHour** |      17.2 | Luz quente do fim da tarde             |
+| **Dusk**       |      18.4 | Luz de transição do início da noite    |
+| **Night**      |      22.0 | Iluminação noturna fria                |
+| **Studio**     |      12.0 | Luz diurna neutra de estúdio           |
+
+`CONTROL_TIME = false` impede que o EndeavorFX altere o `ClockTime`.
 
 ---
 
 ## ⚙️ Modos de Qualidade
 
-Qualidade mais alta não significa "gráficos melhores." Significa análise de cena mais completa:
+A qualidade controla a **profundidade da análise**, não uma configuração direta de gráficos.
 
-- **Showcase** — 900 partes, 260 luzes, 15 amostras de frustum, 9 raios de foco, 12 raios de céu.
-- **Cinematic** — 650 partes, 180 luzes, 11 amostras de frustum, 7 raios de foco, 10 raios de céu.
-- **Balanced** — 400 partes, 120 luzes, 7 amostras de frustum, 5 raios de foco, 8 raios de céu.
+### Showcase
 
-Escolha **Showcase** para cenas complexas e detalhadas onde deseja análise máxima.
+Análise máxima.
 
-Escolha **Cinematic** para desempenho equilibrado e qualidade.
+* 900 partes
+* 260 luzes
+* 15 amostras de frustum
+* 9 raios de foco
+* 12 raios de céu
 
-Escolha **Balanced** para análise rápida em máquinas lentas ou cenas muito complexas.
+Ideal para cenas detalhadas de showcase quando um pouco mais de tempo de análise é aceitável.
+
+### Cinematic
+
+Análise equilibrada.
+
+* 650 partes
+* 180 luzes
+* 11 amostras de frustum
+* 7 raios de foco
+* 10 raios de céu
+
+Recomendado para a maioria das cenas.
+
+### Balanced
+
+Análise leve.
+
+* 400 partes
+* 120 luzes
+* 7 amostras de frustum
+* 5 raios de foco
+* 8 raios de céu
+
+Útil para cenas complexas ou máquinas de desenvolvimento mais lentas.
 
 ---
 
-## 💾 Backup e Restauração
+## 💾 Backup Automático
 
-Quando EndeavorFX é executado, cria automaticamente um backup da configuração original de Iluminação em:
+Antes de modificar o Lighting, o EndeavorFX cria um snapshot em:
 
-```
+```text
 Lighting.G_EndeavorFX_BACKUP
 ```
 
-Isso inclui:
-- Propriedades originais de Iluminação (Ambient, Exposure, etc.)
-- Efeitos de pós-processamento originais (Bloom, DOF, ColorCorrection, etc.)
-- Atmosfera original (se presente)
+O backup contém a configuração original do Lighting e cópias da atmosfera e dos efeitos de pós-processamento relevantes.
 
-Se você executar EndeavorFX várias vezes, reutiliza o mesmo backup (não cria duplicatas).
+Se o EndeavorFX for executado várias vezes, o backup existente é reutilizado em vez de criar um novo snapshot a cada execução.
 
-O backup é seguro para deletar manualmente a qualquer momento.
+Isso permite experimentar diferentes configurações mantendo o estado original protegido.
+
+O backup pode ser excluído manualmente quando não for mais necessário.
 
 ---
 
@@ -241,25 +327,26 @@ EndeavorFX é intencionalmente de código aberto.
 
 Você pode:
 
-- **Fazer um fork do projeto** — Criar sua própria versão.
-- **Modificar o solucionador** — Mudar como a iluminação é computada.
-- **Criar predefinições** — Adicionar humores e horários personalizados.
-- **Experimentar com algoritmos** — Testar novas abordagens.
-- **Otimizar para desempenho** — Fazer mais rápido.
-- **Corrigir bugs** — Melhorar estabilidade.
-- **Construir ferramentas** — Criar plugins, exportadores ou integrações ao redor do EndeavorFX.
+* **Fazer um fork do projeto**
+* **Modificar o solucionador**
+* **Criar humores personalizados**
+* **Criar predefinições de horário personalizadas**
+* **Experimentar com os algoritmos de análise**
+* **Otimizar o desempenho**
+* **Corrigir bugs**
+* **Construir suas próprias ferramentas ao redor do EndeavorFX**
 
-Você não precisa esperar que o projeto principal suporte sua ideia.
+Você não precisa esperar o projeto principal dar suporte à sua ideia.
 
 **Faça sua própria versão.**
 
 Quer criar:
 
-«EndeavorFX Ultra Mega Blender Quality Lighting Extreme»
+> «EndeavorFX Ultra Mega Blender Quality Lighting Extreme»
 
 **Vá em frente.**
 
-Quer criar uma versão pequena otimizada para desempenho?
+Quer criar uma versão pequena focada em desempenho?
 
 **Vá em frente.**
 
@@ -273,11 +360,17 @@ Quer reescrever completamente o solucionador de iluminação?
 
 ## 🤝 Contribuindo
 
-Encontrou um bug? Tem uma otimização? Melhorou o solucionador? Adicionou um recurso útil?
+Encontrou um bug?
+
+Tem uma otimização?
+
+Melhorou o solucionador?
+
+Adicionou um recurso útil?
 
 **Abra uma issue ou pull request.**
 
-Se suas alterações forem úteis para o projeto, elas podem se tornar parte da base de código principal do EndeavorFX.
+Melhorias úteis podem eventualmente fazer parte da base de código principal do EndeavorFX.
 
 Seu fork também pode permanecer completamente independente.
 
@@ -299,26 +392,29 @@ Se você está usando o código original, modificando-o, criando um fork ou cons
 
 **EndeavorFX V9 é um solucionador de iluminação cinemática experimental em evolução.**
 
-O solucionador de plano V9 realiza análise de cena heurística e produz uma solução de iluminação de um único plano. Não é fisicamente preciso.
+O V9 realiza análise heurística da cena e produz uma **solução de iluminação de plano único**.
 
-**Espere:**
+Ele não é fisicamente preciso e não tenta simular perfeitamente a iluminação do mundo real.
 
-- Recursos experimentais
-- Algoritmos em mudança
-- Melhorias de desempenho
-- Novas predefinições
-- Correções de bugs
-- Iluminação ocasional que faz você questionar suas escolhas de vida 💀
+### Espere
 
-**Limitações conhecidas:**
+* Recursos experimentais
+* Algoritmos em mudança
+* Melhorias de desempenho
+* Novas predefinições
+* Correções de bugs
+* Iluminação ocasional que faz você questionar suas escolhas de vida 💀
 
-- Análise de cena é heurística, não baseada em física.
-- Iluminação não é fisicamente precisa.
-- Resultados podem variar significativamente por cena.
-- Desempenho depende da complexidade da cena e configuração de qualidade.
-- Algoritmos podem mudar entre versões.
+### Limitações Conhecidas
 
-Se algo não se comportar corretamente, reporte através de [GitHub Issues](https://github.com/WiFi68/EndeavorFX-/issues).
+* A análise da cena é heurística, não baseada em física.
+* A iluminação não é fisicamente precisa.
+* Os resultados podem variar entre cenas.
+* O desempenho depende da complexidade da cena e da qualidade selecionada.
+* Cenas complexas podem exigir mais tempo de análise.
+* Os algoritmos podem mudar entre versões.
+
+Se algo não se comportar corretamente, reporte através das **GitHub Issues**.
 
 ---
 
@@ -326,9 +422,9 @@ Se algo não se comportar corretamente, reporte através de [GitHub Issues](http
 
 EndeavorFX é lançado sob a **Licença MIT**.
 
-Veja [LICENSE](./LICENSE) para o texto completo da licença.
+Consulte `LICENSE` para o texto completo da licença.
 
-Você é livre para usar, modificar e distribuir EndeavorFX para qualquer propósito.
+Você é livre para usar, modificar e distribuir o EndeavorFX para qualquer finalidade permitida pela Licença MIT.
 
 ---
 
@@ -336,7 +432,7 @@ Você é livre para usar, modificar e distribuir EndeavorFX para qualquer propó
 
 EndeavorFX não foi feito para decidir como seu jogo deve parecer.
 
-Foi feito para lhe dar um ponto de partida forte.
+Ele foi feito para fornecer um ponto de partida forte.
 
 **Analise a cena.**
 
@@ -350,4 +446,4 @@ Foi feito para lhe dar um ponto de partida forte.
 
 ## 🌐 Idiomas
 
-[English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
+**English** | **Português (Brasil)**
