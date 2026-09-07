@@ -143,19 +143,19 @@ O EndeavorFX V9 é um **solucionador heurístico de iluminação de plano único
 
 ```text
 ANÁLISE DA CÂMERA
-        ↓
+         ↓
 ANÁLISE DA CENA
-        ↓
+         ↓
 ANÁLISE DAS LUZES
-        ↓
+         ↓
 ANÁLISE DO SOL / CÉU
-        ↓
+         ↓
 SOLUCIONADOR DO PLANO
-        ↓
+         ↓
 APLICAÇÃO DA ILUMINAÇÃO
-        ↓
+         ↓
 PÓS-PROCESSAMENTO
-        ↓
+         ↓
 PRONTO
 ```
 
@@ -446,4 +446,4 @@ Ele foi feito para fornecer um ponto de partida forte.
 
 ## 🌐 Idiomas
 
-**English** | **Português (Brasil)**
+[**English**](./README.md) | [**Português (Brasil)**](./README.pt-BR.md)
