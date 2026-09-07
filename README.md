@@ -161,3 +161,7 @@ Solve the shot.
 Then make it yours.
 
 — WiFi
+
+---
+
+**Languages:** [English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
