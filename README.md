@@ -36,7 +36,7 @@ Roblox Studio
 
 1. Open your Roblox Studio project.
 2. Open the Command Bar.
-3. Copy the EndeavorFX Lua script.
+3. Copy the code from `src/EndeavorFX.lua` in this repository.
 4. Paste it into the Command Bar.
 5. Run it.
 6. Configure the settings.
