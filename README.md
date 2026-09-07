@@ -143,19 +143,19 @@ EndeavorFX V9 is a **single-shot heuristic lighting solver**.
 
 ```text
 CAMERA ANALYSIS
-      ↓
+       ↓
 SCENE ANALYSIS
-      ↓
+       ↓
 LIGHT ANALYSIS
-      ↓
+       ↓
 SUN / SKY ANALYSIS
-      ↓
+       ↓
 SHOT SOLVER
-      ↓
+       ↓
 LIGHTING APPLICATION
-      ↓
+       ↓
 POST PROCESSING
-      ↓
+       ↓
 DONE
 ```
 
@@ -446,4 +446,4 @@ It's meant to give you a strong starting point.
 
 ## 🌐 Languages
 
-**English** | **Português (Brasil)**
+[**English**](./README.md) | [**Português (Brasil)**](./README.pt-BR.md)
